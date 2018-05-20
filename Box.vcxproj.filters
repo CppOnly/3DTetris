@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="stdafx">
+      <UniqueIdentifier>{1c058db5-ec77-402e-97c6-9e822e19bd5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="D3DApp">
+      <UniqueIdentifier>{119e6893-0db9-4a43-a5f3-54fc4c853275}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="D3DApp\Helper">
+      <UniqueIdentifier>{ac3f1d3d-098d-4883-abfc-204ea7fbb761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{499a90f3-0f3a-4c5f-b98c-db734b0f733b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Grid">
+      <UniqueIdentifier>{86e3a17f-ea73-453a-83bf-a7010f88d37b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Block">
+      <UniqueIdentifier>{3801f959-9392-4374-868c-909a3370eecb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{a845fe25-4105-4914-8677-8bb661b6d7f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameResource">
+      <UniqueIdentifier>{57f9299c-4cd6-4d47-93b4-fd314aa73550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Block\BlockTypeA">
+      <UniqueIdentifier>{30defd0e-1e40-4779-9047-7b84afcf6138}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Block\BlockTypeB">
+      <UniqueIdentifier>{74a863fd-4876-4fa7-8e7b-045421a0aa13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Block\BlockTypeC">
+      <UniqueIdentifier>{7b0d3eb3-db76-424c-896f-cee79cfa5173}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Block\BlockTypeD">
+      <UniqueIdentifier>{d3635d5c-f202-407d-8896-1d7b99db23f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Block\BlockTypeE">
+      <UniqueIdentifier>{c42e2dd8-7249-4896-baaf-cc4bae27ea4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Block\BlockTypeF">
+      <UniqueIdentifier>{8223c3b7-8f1f-49ab-911f-b44ad1168283}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Block\0. Super">
+      <UniqueIdentifier>{aa011dff-e866-439f-bdc5-7e08d77279e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Block\BlockFactory">
+      <UniqueIdentifier>{10f5c720-2938-43f0-ab43-2ee939153c4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tetris3D">
+      <UniqueIdentifier>{5c0f64cf-7cf6-4d5c-bfca-82172c67c8d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AudioManager">
+      <UniqueIdentifier>{84c3ab7d-11c9-40af-bf40-32820f4b0604}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\0. Super">
+      <UniqueIdentifier>{ba73776b-bb9a-46c0-afff-b33e274111ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="D3DApp\0. Super">
+      <UniqueIdentifier>{d91da987-e630-4d63-b165-85ec1d6fdfa9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D3D12Helper.cpp">
+      <Filter>D3DApp\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>D3DApp\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <Filter>stdafx</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>GameObject\0. Super</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>GameObject\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D12App.cpp">
+      <Filter>D3DApp\0. Super</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameResource.cpp">
+      <Filter>FrameResource</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockTypeA.cpp">
+      <Filter>GameObject\Block\BlockTypeA</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockTypeB.cpp">
+      <Filter>GameObject\Block\BlockTypeB</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockTypeC.cpp">
+      <Filter>GameObject\Block\BlockTypeC</Filter>
+    </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>GameObject\Block\0. Super</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockFactory.cpp">
+      <Filter>GameObject\Block\BlockFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockTypeD.cpp">
+      <Filter>GameObject\Block\BlockTypeD</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockTypeE.cpp">
+      <Filter>GameObject\Block\BlockTypeE</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockTypeF.cpp">
+      <Filter>GameObject\Block\BlockTypeF</Filter>
+    </ClCompile>
+    <ClCompile Include="Tetris3D.cpp">
+      <Filter>Tetris3D</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioManager.cpp">
+      <Filter>AudioManager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Helper.h">
+      <Filter>D3DApp\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>D3DApp\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>GameObject\0. Super</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>GameObject\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12App.h">
+      <Filter>D3DApp\0. Super</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameResource.h">
+      <Filter>FrameResource</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockTypeA.h">
+      <Filter>GameObject\Block\BlockTypeA</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockTypeB.h">
+      <Filter>GameObject\Block\BlockTypeB</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockTypeC.h">
+      <Filter>GameObject\Block\BlockTypeC</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>GameObject\Block\0. Super</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockFactory.h">
+      <Filter>GameObject\Block\BlockFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockTypeD.h">
+      <Filter>GameObject\Block\BlockTypeD</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockTypeE.h">
+      <Filter>GameObject\Block\BlockTypeE</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockTypeF.h">
+      <Filter>GameObject\Block\BlockTypeF</Filter>
+    </ClInclude>
+    <ClInclude Include="Tetris3D.h">
+      <Filter>Tetris3D</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioManager.h">
+      <Filter>AudioManager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\Shader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ShaderTess.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
