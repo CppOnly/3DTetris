@@ -306,7 +306,7 @@ void Tetris3D::Draw()
 
 	// 현재 FrameResource의 Value를 m_fenceValue로 설정.
 	m_pCurrFrameResource->m_fenceValue = m_fenceValue;
-	// m_fence의 값을 m_fenceValue로 설정.
+	// GPU의 Draw Call이 끝나면 m_fence의 값을 m_fenceValue로 설정.
 	ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), m_fenceValue));
 	// m_fenceValue를 1늘린다.
 	m_fenceValue++;
@@ -364,8 +364,8 @@ void Tetris3D::UpdateSceneConstantBuffer()
 	m_currFrameResourceIndex = (m_currFrameResourceIndex + 1) % FRAME;
 	m_pCurrFrameResource = m_pFrameResources[m_currFrameResourceIndex];
 
-	// 교체한 FrameResource가 사용중이라면(아직 Rendering이 덜 끝났다면)
-	// 확인 방법 : Draw 함수가 실행되면 FrameResource의 value값은 m_fenceValue가 된다. 이때 m_fenceValue는 계속 늘어난다.
+	// 교체한 FrameResource가 사용중이라면(아직 Rendering이 덜 끝났다면) 어쩔 수 없이 CPU/GPU를 동기화한다.
+	// 확인 방법 : Draw 함수가 실행되면 FrameResource의 value값은 m_fenceValue가 된다. 중요한 점은 m_fenceValue는 계속 늘어난다.
 	// 하지만 Pipeline의 작업이 끝나지 않았다면 m_fence의 값은 m_fenceValue로 갱신이 안된다. 즉, 아래의 조건이 적용된다.
 	if (m_pCurrFrameResource->m_fenceValue > lastCompletedFence) {
 		HANDLE eventHandle = CreateEvent(NULL, FALSE, FALSE, NULL);
