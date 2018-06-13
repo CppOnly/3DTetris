@@ -6,7 +6,7 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _prevInstance, PSTR _cmdLine,
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-
+	// Test
 	try {
 		Tetris3D theApp(_hInstance);
 		if (!theApp.Initialize()) {
