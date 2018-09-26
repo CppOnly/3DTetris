@@ -662,7 +662,7 @@ void Tetris3D::WorkerThread(int _index)
 		WaitForSingleObject(m_threadBeginRenderingHandles[_index], INFINITE);
 
 		ID3D12GraphicsCommandList* pCommandList = m_pCurrFrameResource->m_objectCommandLists[_index].Get();
-
+		
 		if (_index == 0) {
 			SetCommonPipelineState(pCommandList);
 			m_pGrid->OnRender(m_device.Get(), pCommandList, m_cbvHeap.Get(), m_pipelineState.Get(), m_pipelineStateTess.Get());

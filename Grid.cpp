@@ -140,11 +140,14 @@ void Grid::OnRender(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, 
 	GameObject::UpdateConstantBuffer();
 	GameObject::SetDescriptorTable(_device, _cmdList, _descHeap);
 
+	// 먼저 Normal Shader를 설정해 Grid를 그리고 나서
+	_cmdList->SetPipelineState(_pso);
 	_cmdList->IASetVertexBuffers(0, 1, &m_pGeometry->GetVertexBufferView());
 	_cmdList->IASetIndexBuffer(&m_pGeometry->GetIndexBufferView());
 	_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 	_cmdList->DrawIndexedInstanced(m_pGeometry->IndexNum, 1, 0, 0, 0);
 
+	// Tessellation Shader를 설정해 StackedBlock을 그리고 이후 Current나 NextBlock도 모두 그린다.
 	OnRender_StackedBlock(_device, _cmdList, _descHeap, _pso, _psoTess);
 }
 
