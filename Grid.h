@@ -18,6 +18,11 @@ public:
 public:
 	bool m_isActivate = false;
 
+	/*
+	 * ※ 주의점 ※
+	 * 300개의 객체가 동일한 Geometry Data를 사용하므로 최적화를 위해 
+	 * 해당 클래스는 GameObject의 멤버 변수/함수가 아닌 정적 멤버 변수/함수를 따로 정의해 사용한다.(동일한 네이밍)
+	 */
 public:
 	static void BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList);
 
@@ -25,7 +30,6 @@ private:
 	static void BuildBorder(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList);
 
 private:
-	// 300여개의 객체가 동일한 Data를 사용하므로 최적화를 위해 Static Geometry Data를 따로 쓴다.
 	static std::unique_ptr<MeshGeometry> m_pGeometry;
 	static std::unique_ptr<MeshGeometry> m_pBorder;
 };
