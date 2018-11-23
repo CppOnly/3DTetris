@@ -23,9 +23,10 @@ public:
 private:
 	std::unique_ptr<D3DUtil::UploadBuffer<SceneConstant>> m_constantBuffer = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pipelineState = nullptr;
-
+#pragma region _Forbidden Constructor_
 private:
 	FrameResource() = delete;
 	FrameResource(const FrameResource& rhs) = delete;
 	FrameResource& operator=(const FrameResource& rhs) = delete;
+#pragma endregion
 };
