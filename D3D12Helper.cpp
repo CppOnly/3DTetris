@@ -7,10 +7,9 @@ using namespace DirectX::PackedVector;
 using Microsoft::WRL::ComPtr;
 
 DxException::DxException(HRESULT _hr, const wstring& _functionName, const std::wstring& _filename, int _lineNumber)
-	: ErrorCode(_hr), FunctionName(_functionName), Filename(_filename), LineNumber(_lineNumber) {}
+	:ErrorCode(_hr), FunctionName(_functionName), Filename(_filename), LineNumber(_lineNumber) {}
 
-std::wstring DxException::ToString()const
-{
+std::wstring DxException::ToString()const {
 	_com_error err(ErrorCode);
 	std::wstring msg = err.ErrorMessage();
 
@@ -19,16 +18,12 @@ std::wstring DxException::ToString()const
 
 
 
-
-
-UINT D3DUtil::CalcConstantBufferByteSize(UINT _byteSize)
-{
+UINT D3DUtil::CalcConstantBufferByteSize(UINT _byteSize) {
 	UINT temp = _byteSize / 256;
 	return 256 * (temp + 1);
 }
 
-ComPtr<ID3D12Resource> D3DUtil::CreateDefaultBuffer(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const void* _initData, UINT64 _byteSize, ComPtr<ID3D12Resource>& _uploadBuffer)
-{
+ComPtr<ID3D12Resource> D3DUtil::CreateDefaultBuffer(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const void* _initData, UINT64 _byteSize, ComPtr<ID3D12Resource>& _uploadBuffer) {
 	ComPtr<ID3D12Resource> defaultBuffer;
 
 	ThrowIfFailed(_device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, &CD3DX12_RESOURCE_DESC::Buffer(_byteSize), D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(defaultBuffer.GetAddressOf())));
@@ -46,8 +41,7 @@ ComPtr<ID3D12Resource> D3DUtil::CreateDefaultBuffer(ID3D12Device* _device, ID3D1
 	return defaultBuffer;
 }
 
-ComPtr<ID3DBlob> D3DUtil::CompileShader(const std::wstring& _filename, const D3D_SHADER_MACRO* _pDefines, const string& _entrypoint, const std::string& _target)
-{
+ComPtr<ID3DBlob> D3DUtil::CompileShader(const std::wstring& _filename, const D3D_SHADER_MACRO* _pDefines, const string& _entrypoint, const std::string& _target) {
 	UINT compileFlags = 0;
 
 #if defined(DEBUG) || defined(_DEBUG)  
@@ -63,16 +57,12 @@ ComPtr<ID3DBlob> D3DUtil::CompileShader(const std::wstring& _filename, const D3D
 	if (errors != nullptr) {
 		OutputDebugStringA((char*)errors->GetBufferPointer());
 	}
-
 	return byteCode;
 }
 
 
 
-
-
-D3D12_VERTEX_BUFFER_VIEW MeshGeometry::GetVertexBufferView() const
-{
+D3D12_VERTEX_BUFFER_VIEW MeshGeometry::GetVertexBufferView() const {
 	D3D12_VERTEX_BUFFER_VIEW vbv;
 	vbv.BufferLocation = VertexBuffer->GetGPUVirtualAddress();
 	vbv.StrideInBytes = VertexByteStride;
@@ -81,8 +71,7 @@ D3D12_VERTEX_BUFFER_VIEW MeshGeometry::GetVertexBufferView() const
 	return vbv;
 }
 
-D3D12_INDEX_BUFFER_VIEW MeshGeometry::GetIndexBufferView() const
-{
+D3D12_INDEX_BUFFER_VIEW MeshGeometry::GetIndexBufferView() const {
 	D3D12_INDEX_BUFFER_VIEW ibv;
 	ibv.BufferLocation = IndexBuffer->GetGPUVirtualAddress();
 	ibv.Format = DXGI_FORMAT_R32_UINT;

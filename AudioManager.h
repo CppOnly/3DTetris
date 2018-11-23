@@ -1,16 +1,11 @@
 #pragma once
 #include "stdafx.h"
 
-class AudioManager
-{
+class AudioManager final {
 public:
 	AudioManager();
 	~AudioManager();
 
-	AudioManager(const AudioManager& _rhs) = delete;
-	AudioManager& operator=(const AudioManager& _rhs) = delete;
-
-public:
 	bool InitXAudio2();
 
 	void PlayMainAudio();
@@ -18,7 +13,7 @@ public:
 
 	void PlayWinAudio();
 	void StopWinAudio();
-	
+
 	void PlayLoseAudio();
 	void StopLoseAudio();
 
@@ -43,11 +38,15 @@ private:
 	WAVEFORMATEXTENSIBLE wfx = { 0 };
 	std::array<XAUDIO2_BUFFER, 4> buffer = { 0 };
 
-	enum AudioType
-	{
+	enum AudioType {
 		MAIN = 0, WIN = 1, LOSE = 2, DROP = 3
 	};
 
 private:
 	static bool m_isCreate;
+#pragma region _Forbidden Constructor_
+private:
+	AudioManager(const AudioManager& _rhs) = delete;
+	AudioManager& operator=(const AudioManager& _rhs) = delete;
+#pragma endregion
 };

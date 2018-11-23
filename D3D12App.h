@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-
 #include "GameTimer.h"
 
 #if defined(DEBUG) || defined(_DEBUG)
@@ -8,22 +7,33 @@
 #include <crtdbg.h>
 #endif
 
-class D3D12App
-{
+class D3D12App {
 protected:
 	explicit D3D12App(HINSTANCE _hInstance);
 	virtual ~D3D12App();
-
-	// D3D12의 기본 생성과 복사생성, 대입연산은 금지합니다.
-	D3D12App() = delete;
-	D3D12App(const D3D12App& _rhs) = delete;
-	D3D12App& operator=(const D3D12App& _rhs) = delete;
 
 public:
 	virtual bool Initialize();
 	virtual LRESULT MsgProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 
 	int RunWindow();
+
+	static D3D12App* GetThis();
+
+protected:
+	virtual void BuildAllDescriptorHeaps();
+	virtual void OnResize();
+	virtual void Update(GameTimer& _gt) = 0;
+	virtual void Draw() = 0;
+
+	virtual void OnMouseDown(WPARAM _btnState, int _x, int _y) { }
+	virtual void OnMouseUp(WPARAM _btnState, int _x, int _y)   { }
+	virtual void OnMouseMove(WPARAM _btnState, int _x, int _y) { }
+	virtual void OnKeyPressed(WPARAM _key) {}
+
+	bool InitWindowApplication();
+
+	void WaitForPreviousFrame();
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHeapCPUHandle() const;
 	D3D12_GPU_DESCRIPTOR_HANDLE GetRTVHeapGPUHandle() const;
@@ -34,23 +44,6 @@ public:
 	HINSTANCE GetHINST() const;
 	HWND GetHWND() const;
 	float GetAspectRatio() const;
-
-protected:
-	/* 가상 함수 */
-	virtual void BuildAllDescriptorHeaps();
-	virtual void OnResize();
-	virtual void Update(GameTimer& _gt) = 0;
-	virtual void Draw() = 0;
-
-	/* 마우스 &키보드  설정 */
-	virtual void OnMouseDown(WPARAM _btnState, int _x, int _y) { }
-	virtual void OnMouseUp(WPARAM _btnState, int _x, int _y) { }
-	virtual void OnMouseMove(WPARAM _btnState, int _x, int _y) { }
-	virtual void OnKeyPressed(WPARAM _key) {}
-
-	bool InitWindowApplication();
-
-	void WaitForPreviousFrame();
 
 private:
 	bool InitD3D12();
@@ -107,12 +100,9 @@ protected:
 
 	GameTimer m_timer;
 
-public:
-	static D3D12App* GetThis();
-
 private:
 	static D3D12App* m_app;
-
+#pragma region _Application Setting Value_
 protected:
 	UINT m_width = 1280;
 	UINT m_height = 960;
@@ -123,4 +113,11 @@ protected:
 	bool m_useWarpDevice = false;
 
 	std::wstring m_mainWndCaption = L"D3D12App";
+#pragma endregion
+#pragma region _Forbidden Constructor_
+private:
+	D3D12App() = delete;
+	D3D12App(const D3D12App& _rhs) = delete;
+	D3D12App& operator=(const D3D12App& _rhs) = delete;
+#pragma endregion
 };

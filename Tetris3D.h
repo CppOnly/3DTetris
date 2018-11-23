@@ -1,24 +1,17 @@
 #pragma once
 #include "stdafx.h"
 #include "D3D12App.h"
-
 #include "Grid.h"
 #include "Block.h"
 #include "AudioManager.h"
 #include "BlockFactory.h"
 #include "FrameResource.h"
 
-class Tetris3D : public D3D12App
-{
+class Tetris3D final : public D3D12App {
 public:
 	explicit Tetris3D(HINSTANCE _hInstance);
 	virtual ~Tetris3D();
 
-	Tetris3D() = delete;
-	Tetris3D(const Tetris3D& rhs) = delete;
-	Tetris3D& operator=(const Tetris3D& rhs) = delete;
-
-public:
 	virtual bool Initialize() override;
 
 private:
@@ -26,7 +19,6 @@ private:
 	virtual void OnResize() override;
 	virtual void Update(GameTimer& _gt) override;
 	virtual void Draw() override;
-
 	virtual void OnMouseDown (WPARAM _btnState, int _x, int _y) override;
 	virtual void OnMouseUp   (WPARAM _btnState, int _x, int _y) override;
 	virtual void OnMouseMove (WPARAM _btnState, int _x, int _y) override;
@@ -38,8 +30,7 @@ private:
 	void BuildRootSignature();
 	void BuildPipelineStateObject();
 	void BuildFrameResource();
-	
-	// Game Data Method
+
 	void BuildGameData();
 	void NewGame();
 	void GameOver();
@@ -49,7 +40,6 @@ private:
 	void MoveDownCurrBlock();
 	float CalcBlockFallingTimeByLevel(UINT _level);
 
-	// Multi-Threading Method
 	void BuildThread();
 	void BeginRendering();
 	void EndRendering();
@@ -57,7 +47,6 @@ private:
 	void SetCommonPipelineState(ID3D12GraphicsCommandList* _cmdList);
 	void SetCommonPipelineState_UI(ID3D12GraphicsCommandList* _cmdList);
 
-	// UI Rendering Method
 	void BuildConstantBuffer_UI();
 	void BuildTextData();
 	void OnRender_MainUI();
@@ -65,24 +54,17 @@ private:
 	void OnRender_GameOverUI();
 	void OnRender_GameClearUI();
 
-	// Network Method
-	void SendScoreToServer();
-
 private:
+	std::unique_ptr<AudioManager> m_audioManger = nullptr;
+
 	std::unique_ptr<D3DUtil::UploadBuffer<SceneConstant>> m_constantBuffer_UI = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3DBlob> m_VSByteCode = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> m_PSByteCode = nullptr;
 
-	Microsoft::WRL::ComPtr<ID3DBlob> m_VSTessByteCode = nullptr;
-	Microsoft::WRL::ComPtr<ID3DBlob> m_PSTessByteCode = nullptr;
-	Microsoft::WRL::ComPtr<ID3DBlob> m_HSTessByteCode = nullptr;
-	Microsoft::WRL::ComPtr<ID3DBlob> m_DSTessByteCode = nullptr;
-
 	std::vector<D3D12_INPUT_ELEMENT_DESC> m_inputLayout;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_rootSignature = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pipelineState = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pipelineStateTess = nullptr;
 
 	Microsoft::WRL::ComPtr<IDWriteTextFormat> m_textFormat = nullptr;
 	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> m_textBrush = nullptr;
@@ -113,8 +95,7 @@ private:
 	bool m_isGameClear = false;
 	bool m_isGamePaused = false;
 
-	struct ThreadParameter
-	{
+	struct ThreadParameter {
 		UINT ThreadIndex;
 	};
 	ThreadParameter m_threadParameters[THREADNUM];
@@ -124,8 +105,5 @@ private:
 
 	UINT64 m_fenceValue = 0;
 
-	std::unique_ptr<AudioManager> m_audioManger = nullptr;
-
-private:
 	static Tetris3D* m_app;
 };

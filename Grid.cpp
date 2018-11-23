@@ -6,41 +6,27 @@ using namespace DirectX;
 using namespace DirectX::PackedVector;
 
 StackedBlock::StackedBlock(ID3D12Device* _device, ID3D12DescriptorHeap* _descHeap)
-	:GameObject(_device, _descHeap) 
-{}
+	:GameObject(_device, _descHeap) {}
 
-StackedBlock::~StackedBlock()
-{
-	m_pGeometry.reset();
-	m_pBorder.reset();
-}
-
-
-
-void StackedBlock::OnRender(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso, ID3D12PipelineState* _psoTess)
-{
+void StackedBlock::OnRender(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso) {
 	GameObject::UpdateConstantBuffer();
 	GameObject::SetDescriptorTable(_device, _cmdList, _descHeap);
 
-	_cmdList->SetPipelineState(_psoTess);
-	_cmdList->IASetVertexBuffers(0, 1, &m_pGeometry->GetVertexBufferView());
-	_cmdList->IASetIndexBuffer(&m_pGeometry->GetIndexBufferView());
-	_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
-	_cmdList->DrawIndexedInstanced(m_pGeometry->IndexNum, 1, 0, 0, 0);
-
 	_cmdList->SetPipelineState(_pso);
-	_cmdList->IASetVertexBuffers(0, 1, &m_pBorder->GetVertexBufferView());
-	_cmdList->IASetIndexBuffer(&m_pBorder->GetIndexBufferView());
+	_cmdList->IASetVertexBuffers(0, 1, &m_pGeometry_S->GetVertexBufferView());
+	_cmdList->IASetIndexBuffer(&m_pGeometry_S->GetIndexBufferView());
+	_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	_cmdList->DrawIndexedInstanced(m_pGeometry_S->IndexNum, 1, 0, 0, 0);
+
+	_cmdList->IASetVertexBuffers(0, 1, &m_pBorder_S->GetVertexBufferView());
+	_cmdList->IASetIndexBuffer(&m_pBorder_S->GetIndexBufferView());
 	_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-	_cmdList->DrawIndexedInstanced(m_pBorder->IndexNum, 1, 0, 0, 0);
+	_cmdList->DrawIndexedInstanced(m_pBorder_S->IndexNum, 1, 0, 0, 0);
 }
 
-
-
-void StackedBlock::BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList)
-{
-	m_pGeometry = std::make_unique<MeshGeometry>();
-	m_pBorder = std::make_unique<MeshGeometry>();
+void StackedBlock::BuildGeometry_S(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList) {
+	m_pGeometry_S = std::make_unique<MeshGeometry>();
+	m_pBorder_S = std::make_unique<MeshGeometry>();
 
 	array<Vertex, 8> vertices = {
 		Vertex({ XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT4(Colors::SlateGray) }),
@@ -62,21 +48,18 @@ void StackedBlock::BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandLis
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(UINT);
 
-	m_pGeometry->VertexBuffer = D3DUtil::CreateDefaultBuffer(_device, _cmdList, vertices.data(), vbByteSize, m_pGeometry->VertexBufferUpload);
-	m_pGeometry->IndexBuffer = D3DUtil::CreateDefaultBuffer(_device, _cmdList, indices.data(), ibByteSize, m_pGeometry->IndexBufferUpload);
+	m_pGeometry_S->VertexBuffer = D3DUtil::CreateDefaultBuffer(_device, _cmdList, vertices.data(), vbByteSize, m_pGeometry_S->VertexBufferUpload);
+	m_pGeometry_S->IndexBuffer = D3DUtil::CreateDefaultBuffer(_device, _cmdList, indices.data(), ibByteSize, m_pGeometry_S->IndexBufferUpload);
 
-	m_pGeometry->VertexByteStride = sizeof(Vertex);
-	m_pGeometry->VBByteSize = vbByteSize;
-	m_pGeometry->IBByteSize = ibByteSize;
-	m_pGeometry->IndexNum = (UINT)indices.size();
+	m_pGeometry_S->VertexByteStride = sizeof(Vertex);
+	m_pGeometry_S->VBByteSize = vbByteSize;
+	m_pGeometry_S->IBByteSize = ibByteSize;
+	m_pGeometry_S->IndexNum = (UINT)indices.size();
 
-	BuildBorder(_device, _cmdList);
+	BuildBorder_S(_device, _cmdList);
 }
 
-
-
-void StackedBlock::BuildBorder(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList)
-{
+void StackedBlock::BuildBorder_S(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList) {
 	array<Vertex, 8> vertices = {
 		Vertex({ XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT4(Colors::Black) }),
 		Vertex({ XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(Colors::Black) }),
@@ -97,66 +80,43 @@ void StackedBlock::BuildBorder(ID3D12Device* _device, ID3D12GraphicsCommandList*
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(UINT);
 
-	m_pBorder->VertexBuffer = D3DUtil::CreateDefaultBuffer(_device, _cmdList, vertices.data(), vbByteSize, m_pBorder->VertexBufferUpload);
-	m_pBorder->IndexBuffer = D3DUtil::CreateDefaultBuffer(_device, _cmdList, indices.data(), ibByteSize, m_pBorder->IndexBufferUpload);
+	m_pBorder_S->VertexBuffer = D3DUtil::CreateDefaultBuffer(_device, _cmdList, vertices.data(), vbByteSize, m_pBorder_S->VertexBufferUpload);
+	m_pBorder_S->IndexBuffer = D3DUtil::CreateDefaultBuffer(_device, _cmdList, indices.data(), ibByteSize, m_pBorder_S->IndexBufferUpload);
 
-	m_pBorder->VertexByteStride = sizeof(Vertex);
-	m_pBorder->VBByteSize = vbByteSize;
-	m_pBorder->IBByteSize = ibByteSize;
-	m_pBorder->IndexNum = (UINT)indices.size();
+	m_pBorder_S->VertexByteStride = sizeof(Vertex);
+	m_pBorder_S->VBByteSize = vbByteSize;
+	m_pBorder_S->IBByteSize = ibByteSize;
+	m_pBorder_S->IndexNum = (UINT)indices.size();
 }
 
-unique_ptr<MeshGeometry> StackedBlock::m_pGeometry = nullptr;
-unique_ptr<MeshGeometry> StackedBlock::m_pBorder = nullptr;
-
-
+unique_ptr<MeshGeometry> StackedBlock::m_pGeometry_S = nullptr;
+unique_ptr<MeshGeometry> StackedBlock::m_pBorder_S = nullptr;
 
 
 
 Grid::Grid(ID3D12Device* _device, ID3D12DescriptorHeap* _descHeap)
-	:GameObject(_device, _descHeap)
-{
-	// 300여개의 StackedBlock을 미리 만들어둔다. 최적화가 되어 있기에 큰 영향은 없다.
+	:GameObject(_device, _descHeap) {
 	BuildStackedBlockPool(_device, _descHeap);
 }
 
-Grid::~Grid()
-{
-	for (int z = (Z_SIZE - 1); z >= 0; --z) {
-		for (UINT y = 0; y < Y_SIZE; ++y) {
-			for (UINT x = 0; x < X_SIZE; ++x) {
-				if (m_stackedBlocks[x][y][z] != nullptr) {
-					m_stackedBlocks[x][y][z].reset();
-				}
-			}
-		}
-	}
-}
-
-
-
-void Grid::OnRender(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso, ID3D12PipelineState* _psoTess)
-{
+void Grid::OnRender(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso) {
 	GameObject::UpdateConstantBuffer();
 	GameObject::SetDescriptorTable(_device, _cmdList, _descHeap);
 
-	// 먼저 Normal Shader를 설정해 Grid를 그리고 나서
 	_cmdList->SetPipelineState(_pso);
 	_cmdList->IASetVertexBuffers(0, 1, &m_pGeometry->GetVertexBufferView());
 	_cmdList->IASetIndexBuffer(&m_pGeometry->GetIndexBufferView());
 	_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 	_cmdList->DrawIndexedInstanced(m_pGeometry->IndexNum, 1, 0, 0, 0);
 
-	// Tessellation Shader를 설정해 StackedBlock을 그리고 이후 Current나 NextBlock도 모두 그린다.
-	OnRender_StackedBlock(_device, _cmdList, _descHeap, _pso, _psoTess);
+	OnRender_StackedBlock(_device, _cmdList, _descHeap, _pso);
 }
 
-void Grid::BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList)
-{
+void Grid::BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList) {
 	vector<Vertex> vertices;
 	vertices.reserve(90);
 
-	// 정면
+	// Front
 	for (float i = (float)X_SIZE; i >= 0; --i) {
 		vertices.push_back(Vertex{ XMFLOAT3(0.0f, i, (float)Z_SIZE), XMFLOAT4(Colors::Green) });
 		vertices.push_back(Vertex{ XMFLOAT3((float)X_SIZE, i, (float)Z_SIZE), XMFLOAT4(Colors::Green) });
@@ -164,7 +124,7 @@ void Grid::BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdL
 		vertices.push_back(Vertex{ XMFLOAT3(i, (float)Y_SIZE, (float)Z_SIZE), XMFLOAT4(Colors::Green) });
 		vertices.push_back(Vertex{ XMFLOAT3(i, 0.0f, (float)Z_SIZE), XMFLOAT4(Colors::Green) });
 	}
-	// 좌측
+	// Left
 	for (float i = (float)Z_SIZE - 1; i >= 0; --i) {
 		vertices.push_back(Vertex{ XMFLOAT3(0.0f, (float)Y_SIZE, i), XMFLOAT4(Colors::Green) });
 		vertices.push_back(Vertex{ XMFLOAT3(0.0f, 0.0f, i), XMFLOAT4(Colors::Green) });
@@ -173,7 +133,7 @@ void Grid::BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdL
 	for (float i = (float)Y_SIZE; i >= 0.0f; --i) {
 		vertices.push_back(Vertex{ XMFLOAT3(0.0f, i, 0.0f), XMFLOAT4(Colors::Green) });
 	}
-	// 우측
+	// Right
 	for (float i = (float)Z_SIZE - 1; i >= 0; --i) {
 		vertices.push_back(Vertex{ XMFLOAT3((float)X_SIZE, (float)Y_SIZE, i), XMFLOAT4(Colors::Green) });
 		vertices.push_back(Vertex{ XMFLOAT3((float)X_SIZE, 0.0f, i), XMFLOAT4(Colors::Green) });
@@ -182,11 +142,11 @@ void Grid::BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdL
 	for (float i = (float)Y_SIZE; i >= 0.0f; --i) {
 		vertices.push_back(Vertex{ XMFLOAT3((float)X_SIZE, i, 0.0f), XMFLOAT4(Colors::Green) });
 	}
-	// 상단
+	// Top
 	for (float i = 1.0f; i <= (float)X_SIZE - 1; ++i) {
 		vertices.push_back(Vertex{ XMFLOAT3(i, (float)Y_SIZE, 0.0f), XMFLOAT4(Colors::Green) });
 	}
-	// 하단
+	// Bottom
 	for (float i = 1.0f; i <= (float)X_SIZE - 1; ++i) {
 		vertices.push_back(Vertex{ XMFLOAT3(i, 0.0f, 0.0f), XMFLOAT4(Colors::Green) });
 	}
@@ -213,38 +173,25 @@ void Grid::BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdL
 	m_pGeometry->IBByteSize = ibByteSize;
 	m_pGeometry->IndexNum = (UINT)indices.size();
 
-	// StackedBlock의 Geometry Data를 초기화한다. 단 1회만 생성한다.
-	StackedBlock::BuildGeometry(_device, _cmdList);
+	StackedBlock::BuildGeometry_S(_device, _cmdList);
 }
 
-
-
-UINT Grid::CalcRemoveNum()
-{
+UINT Grid::CalcRemovedNumOfLayer() {
 	UINT num = 0;
-
-	// 밑바닥부터 탐색하며
 	for (int z = Z_SIZE - 1; z >= m_highestLayerOfStackedBlocks; --z) {
-		// 조건을 충족하는 층이 있다면
 		if (IsLayerFull(z)) {
-			// 층의 Block을 모두 삭제하고
 			RemoveStackedBlocksOnLayer(z);
-			// 다시 탐색을 밑바닥부터 하도록 하며
 			++z;
-			// Clear한 층의 수를 저장한다.
 			++num;
 		}
 	}
 	return num;
 }
 
-void Grid::ResetStackedBlocksData()
-{
-	// 가로→세로→깊이를 모두 탐색하며
+void Grid::ResetStackedBlocksData() {
 	for (int z = Z_SIZE - 1; z >= 0; --z) {
 		for (UINT y = 0; y < Y_SIZE; ++y) {
 			for (UINT x = 0; x < X_SIZE; ++x) {
-				// 해당 층에 Block이 있다면 FALSE로 만든다.
 				if (m_stackedBlocks[x][y][z]->m_isActivate == true) {
 					m_stackedBlocks[x][y][z]->m_isActivate = false;
 				}
@@ -254,10 +201,7 @@ void Grid::ResetStackedBlocksData()
 	m_highestLayerOfStackedBlocks = Z_SIZE;
 }
 
-
-
-void Grid::BuildStackedBlockPool(ID3D12Device* _device, ID3D12DescriptorHeap* _descHeap)
-{
+void Grid::BuildStackedBlockPool(ID3D12Device* _device, ID3D12DescriptorHeap* _descHeap) {
 	for (int z = (Z_SIZE - 1); z >= 0; --z) {
 		for (UINT y = 0; y < Y_SIZE; ++y) {
 			for (UINT x = 0; x < X_SIZE; ++x) {
@@ -270,23 +214,19 @@ void Grid::BuildStackedBlockPool(ID3D12Device* _device, ID3D12DescriptorHeap* _d
 	}
 }
 
-void Grid::OnRender_StackedBlock(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso, ID3D12PipelineState* _psoTess) const
-{
-	// 최상층부터 Grid 내부를 순차 탐색하면서
+void Grid::OnRender_StackedBlock(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso, ID3D12PipelineState* _psoTess) const {
 	for (int z = (Z_SIZE - 1); z >= 0; --z) {
 		for (UINT y = 0; y < Y_SIZE; ++y) {
 			for (UINT x = 0; x < X_SIZE; ++x) {
-				// 해당 위치에 Block이 있다면 Block을 그려야 한다.
 				if (IsStackedBlockAtLocation(x, y, z)) {
-					m_stackedBlocks[x][y][z]->OnRender(_device, _cmdList, _descHeap, _pso, _psoTess);
+					m_stackedBlocks[x][y][z]->OnRender(_device, _cmdList, _descHeap, _pso);
 				}
 			}
 		}
 	}
 }
 
-void Grid::RemoveStackedBlocksOnLayer(UINT _layer)
-{
+void Grid::RemoveStackedBlocksOnLayer(UINT _layer) {
 	for (int z = _layer; z >= m_highestLayerOfStackedBlocks; --z) {
 		for (UINT y = 0; y < Y_SIZE; ++y) {
 			for (UINT x = 0; x < X_SIZE; ++x) {
@@ -297,30 +237,21 @@ void Grid::RemoveStackedBlocksOnLayer(UINT _layer)
 		}
 	}
 
-	// 최고층의 정보를 한 칸 내린다.
 	++m_highestLayerOfStackedBlocks;
 }
 
-bool Grid::IsLayerFull(UINT _layer) const
-{
-	// 가로→세로를 모두 탐색하며
+bool Grid::IsLayerFull(UINT _layer) const {
 	for (UINT y = 0; y < Y_SIZE; ++y) {
 		for (UINT x = 0; x < X_SIZE; ++x) {
-
-			// 해당 층에 Block이 한 개라도 없다면 False를 반환.
 			if (!IsStackedBlockAtLocation(x, y, _layer)) {
 				return false;
 			}
 		}
 	}
-	// 해당 층에 Block이 모두 있다면 True를 반환.
 	return true;
 }
 
-
-
-void Grid::StackBlockAtLocation(UINT _x, UINT _y, UINT _z)
-{
+void Grid::StackBlockAtLocation(UINT _x, UINT _y, UINT _z) {
 	if (!(_x >= 0 && _x < X_SIZE) ||
 		!(_y >= 0 && _y < Y_SIZE) ||
 		!(_z >= 1 && _z < Z_SIZE) ||
@@ -335,8 +266,7 @@ void Grid::StackBlockAtLocation(UINT _x, UINT _y, UINT _z)
 	m_stackedBlocks[_x][_y][_z]->m_isActivate = true;
 }
 
-bool Grid::IsStackedBlockAtLocation(UINT _x, UINT _y, UINT _z)
-{
+bool Grid::IsStackedBlockAtLocation(UINT _x, UINT _y, UINT _z) {
 	assert(_x >= 0 && _x < X_SIZE);
 	assert(_y >= 0 && _y < Y_SIZE);
 	assert(_z >= 0 && _z < Z_SIZE);

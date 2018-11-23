@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "Tetris3D.h"
 
-int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _prevInstance, PSTR _cmdLine, int _showCmd)
-{
+int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _prevInstance, PSTR _cmdLine, int _showCmd) {
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
@@ -11,7 +10,6 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _prevInstance, PSTR _cmdLine,
 		if (!theApp.Initialize()) {
 			return 0;
 		}
-
 		return theApp.RunWindow();
 	}
 	catch (DxException& e) {

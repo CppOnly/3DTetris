@@ -6,53 +6,27 @@ using namespace DirectX;
 using namespace DirectX::PackedVector;
 
 BlockTypeE::BlockTypeE(ID3D12Device* _device, ID3D12DescriptorHeap* _descHeap)
-	:Block(_device, _descHeap)
-{
+	:Block(_device, _descHeap) {
 	ResetRelativeData();
 }
 
-BlockTypeE::~BlockTypeE()
-{
-	m_pGeometry.reset();
-	m_pBorder.reset();
-}
-
-
-
-void BlockTypeE::OnRender(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso, ID3D12PipelineState* _psoTess)
-{
+void BlockTypeE::OnRender(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso) {
 	GameObject::UpdateConstantBuffer();
 	GameObject::SetDescriptorTable(_device, _cmdList, _descHeap);
 
-	_cmdList->SetPipelineState(_psoTess);
+	_cmdList->SetPipelineState(_pso);
 	_cmdList->IASetVertexBuffers(0, 1, &m_pGeometry->GetVertexBufferView());
 	_cmdList->IASetIndexBuffer(&m_pGeometry->GetIndexBufferView());
-	_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+	_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	_cmdList->DrawIndexedInstanced(m_pGeometry->IndexNum, 1, 0, 0, 0);
 
-	_cmdList->SetPipelineState(_pso);
 	_cmdList->IASetVertexBuffers(0, 1, &m_pBorder->GetVertexBufferView());
 	_cmdList->IASetIndexBuffer(&m_pBorder->GetIndexBufferView());
 	_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 	_cmdList->DrawIndexedInstanced(m_pBorder->IndexNum, 1, 0, 0, 0);
 }
 
-void BlockTypeE::ResetRelativeData()
-{
-	m_blockRelativePositions.resize(4);
-	m_blockRelativePositions[0] = XMFLOAT3( 0.5f, -0.5f, -0.5f);
-	m_blockRelativePositions[1] = XMFLOAT3( 0.5f, -0.5f,  0.5f);
-	m_blockRelativePositions[2] = XMFLOAT3(-0.5f, -0.5f,  0.5f);
-	m_blockRelativePositions[3] = XMFLOAT3(-0.5f, -0.5f, -0.5f);
-}
-
-
-
-void BlockTypeE::BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList)
-{
-	m_pGeometry = std::make_unique<MeshGeometry>();
-	m_pBorder = std::make_unique<MeshGeometry>();
-
+void BlockTypeE::BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList) {
 	array<Vertex, 18> vertices = {
 		Vertex({ XMFLOAT3( 0.0f,  0.0f,  0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f) }),
 		Vertex({ XMFLOAT3( 1.0f,  0.0f,  0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f) }),
@@ -93,10 +67,7 @@ void BlockTypeE::BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList*
 	BuildBorder(_device, _cmdList);
 }
 
-
-
-void BlockTypeE::BuildBorder(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList)
-{
+void BlockTypeE::BuildBorder(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList) {
 	array<Vertex, 18> vertices = {
 		Vertex({ XMFLOAT3( 0.0f,  0.0f,  0.0f), XMFLOAT4(Colors::Black) }),
 		Vertex({ XMFLOAT3( 1.0f,  0.0f,  0.0f), XMFLOAT4(Colors::Black) }),
@@ -137,5 +108,10 @@ void BlockTypeE::BuildBorder(ID3D12Device* _device, ID3D12GraphicsCommandList* _
 	m_pBorder->IndexNum = (UINT)indices.size();
 }
 
-unique_ptr<MeshGeometry> BlockTypeE::m_pGeometry = nullptr;
-unique_ptr<MeshGeometry> BlockTypeE::m_pBorder = nullptr;
+void BlockTypeE::ResetRelativeData() {
+	m_blockRelativePositions.resize(4);
+	m_blockRelativePositions[0] = XMFLOAT3( 0.5f, -0.5f, -0.5f);
+	m_blockRelativePositions[1] = XMFLOAT3( 0.5f, -0.5f,  0.5f);
+	m_blockRelativePositions[2] = XMFLOAT3(-0.5f, -0.5f,  0.5f);
+	m_blockRelativePositions[3] = XMFLOAT3(-0.5f, -0.5f, -0.5f);
+}

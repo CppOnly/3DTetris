@@ -3,9 +3,6 @@
 #define _WIN32_WINNT 0x0A00
 #define WIN32_LEAN_AND_MEAN
 
-#define PORT 3500
-#define IP "127.0.0.1"
-
 #pragma comment(lib, "d3dcompiler.lib")
 
 #include <DirectXPackedVector.h>
@@ -46,9 +43,6 @@
 #include <d2d1_3.h>
 #include <dwrite.h>
 #include <pix.h>
-
-#include <winsock2.h>
-#include <stdio.h>
 
 static const UINT FRAME = 2;
 

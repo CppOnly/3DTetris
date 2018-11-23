@@ -1,28 +1,23 @@
-cbuffer ObjectConstantBuffer : register(b0)
-{
+cbuffer ObjectConstantBuffer : register(b0) {
 	float4x4 WorldMat;
 };
 
-cbuffer SceneConstantBuffer : register(b1)
-{
+cbuffer SceneConstantBuffer : register(b1) {
 	float4x4 ViewProjMat;
 	float3   EyePosW;
 };
 
-struct VertexIn
-{
+struct VertexIn {
 	float3 PosL  : POSITION;
 	float4 Color : COLOR;
 };
 
-struct VertexOut
-{
+struct VertexOut {
 	float4 PosL  : POSITION;
 	float4 Color : COLOR;
 };
 
-VertexOut VS(VertexIn _vin)
-{
+VertexOut VS(VertexIn _vin) {
 	VertexOut vout;
 	vout.PosL = float4(_vin.PosL, 1.0f);
 
@@ -31,14 +26,12 @@ VertexOut VS(VertexIn _vin)
 	return vout;
 }
 
-struct PatchTess
-{
+struct PatchTess {
 	float EdgeTess[4]   : SV_TessFactor;
 	float InsideTess[2] : SV_InsideTessFactor;
 };
 
-PatchTess ConstantHS(InputPatch<VertexOut, 4> _patch, uint _patchID : SV_PrimitiveID)
-{
+PatchTess ConstantHS(InputPatch<VertexOut, 4> _patch, uint _patchID : SV_PrimitiveID) {
 	PatchTess pt;
 
 	float3 centerL = 0.25f * (_patch[0].PosL + _patch[1].PosL + _patch[2].PosL + _patch[3].PosL);
@@ -61,8 +54,7 @@ PatchTess ConstantHS(InputPatch<VertexOut, 4> _patch, uint _patchID : SV_Primiti
 	return pt;
 }
 
-struct HullOut
-{
+struct HullOut {
 	float3 PosL  : POSITION;
 	float4 Color : COLOR;
 };
@@ -73,8 +65,7 @@ struct HullOut
 [outputcontrolpoints(4)]
 [patchconstantfunc("ConstantHS")]
 [maxtessfactor(64.0f)]
-HullOut HS(InputPatch<VertexOut, 4> _patch, uint i : SV_OutputControlPointID, uint patchId : SV_PrimitiveID)
-{
+HullOut HS(InputPatch<VertexOut, 4> _patch, uint i : SV_OutputControlPointID, uint patchId : SV_PrimitiveID) {
 	HullOut hout;
 
 	hout.PosL = _patch[i].PosL;
@@ -83,15 +74,13 @@ HullOut HS(InputPatch<VertexOut, 4> _patch, uint i : SV_OutputControlPointID, ui
 	return hout;
 }
 
-struct DomainOut
-{
+struct DomainOut {
 	float4 PosH  : SV_POSITION;
 	float4 Color : COLOR;
 };
 
 [domain("quad")]
-DomainOut DS(const OutputPatch<HullOut, 4> _quad, PatchTess _patchTess, float2 _uv : SV_DomainLocation)
-{
+DomainOut DS(const OutputPatch<HullOut, 4> _quad, PatchTess _patchTess, float2 _uv : SV_DomainLocation) {
 	DomainOut dout;
 
 	float3 v1 = lerp(_quad[0].PosL, _quad[1].PosL, _uv.x);
@@ -110,7 +99,6 @@ DomainOut DS(const OutputPatch<HullOut, 4> _quad, PatchTess _patchTess, float2 _
 	return dout;
 }
 
-float4 PS(DomainOut _pin) : SV_Target
-{
+float4 PS(DomainOut _pin) : SV_Target {
 	return _pin.Color;
 }

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "BlockFactory.h"
-
 #include "BlockTypeA.h"
 #include "BlockTypeB.h"
 #include "BlockTypeC.h"
@@ -10,33 +9,27 @@
 
 using namespace std;
 
-void BlockFactory::BuildAllBlockTypeGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap)
-{
+void BlockFactory::BuildBlockFactory(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap) {
 	srand(time(NULL));
-
-	BlockTypeA::BuildGeometry(_device, _cmdList);
-	BlockTypeB::BuildGeometry(_device, _cmdList);
-	BlockTypeC::BuildGeometry(_device, _cmdList);
-	BlockTypeD::BuildGeometry(_device, _cmdList);
-	BlockTypeE::BuildGeometry(_device, _cmdList);
-	BlockTypeF::BuildGeometry(_device, _cmdList);
-
-	BuildAllBlockTypePool(_device, _descHeap);
-}
-
-void BlockFactory::DestoryBlockFactory()
-{
 	for (UINT i = 0; i < 2; ++i) {
-		m_pBlockA[i].reset();	m_pBlockB[i].reset();
-		m_pBlockC[i].reset();	m_pBlockD[i].reset();
-		m_pBlockE[i].reset();	m_pBlockF[i].reset();
+		m_pBlockA[i] = make_shared<BlockTypeA>(_device, _descHeap);
+		m_pBlockB[i] = make_shared<BlockTypeB>(_device, _descHeap);
+		m_pBlockC[i] = make_shared<BlockTypeC>(_device, _descHeap);
+		m_pBlockD[i] = make_shared<BlockTypeD>(_device, _descHeap);
+		m_pBlockE[i] = make_shared<BlockTypeE>(_device, _descHeap);
+		m_pBlockF[i] = make_shared<BlockTypeF>(_device, _descHeap);
+
+		m_pBlockA[i]->BuildGeometry(_device, _cmdList);
+		m_pBlockB[i]->BuildGeometry(_device, _cmdList);
+		m_pBlockC[i]->BuildGeometry(_device, _cmdList);
+		m_pBlockD[i]->BuildGeometry(_device, _cmdList);
+		m_pBlockE[i]->BuildGeometry(_device, _cmdList);
+		m_pBlockF[i]->BuildGeometry(_device, _cmdList);
 	}
 }
 
-shared_ptr<Block> BlockFactory::SelectRandomBlock()
-{
-	switch (rand() % m_blockTypeNym)
-	{
+shared_ptr<Block> BlockFactory::SelectRandomBlock() {
+	switch (rand() % m_blockTypeNym) {
 	case 0:
 		m_blockTypeAIndex = (m_blockTypeAIndex + 1) % 2;
 		return m_pBlockA[m_blockTypeAIndex];
@@ -66,23 +59,6 @@ shared_ptr<Block> BlockFactory::SelectRandomBlock()
 		m_blockTypeFIndex = (m_blockTypeFIndex + 1) % 2;
 		return m_pBlockF[m_blockTypeFIndex];
 		break;
-
-	default:
-		break;
-	}
-}
-
-
-
-void BlockFactory::BuildAllBlockTypePool(ID3D12Device* _device, ID3D12DescriptorHeap* _descHeap) 
-{
-	for (UINT i = 0; i < 2; ++i) {
-		m_pBlockA[i] = make_shared<BlockTypeA>(_device, _descHeap);
-		m_pBlockB[i] = make_shared<BlockTypeB>(_device, _descHeap);
-		m_pBlockC[i] = make_shared<BlockTypeC>(_device, _descHeap);
-		m_pBlockD[i] = make_shared<BlockTypeD>(_device, _descHeap);
-		m_pBlockE[i] = make_shared<BlockTypeE>(_device, _descHeap);
-		m_pBlockF[i] = make_shared<BlockTypeF>(_device, _descHeap);
 	}
 }
 

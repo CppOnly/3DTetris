@@ -2,68 +2,50 @@
 #include "stdafx.h"
 #include "GameObject.h"
 
-class StackedBlock : public GameObject
-{
+class StackedBlock final : public GameObject {
 public:
 	StackedBlock(ID3D12Device* _device, ID3D12DescriptorHeap* _descHeap);
-	virtual ~StackedBlock();
+	virtual ~StackedBlock() = default;
 
-	StackedBlock() = delete;
-	StackedBlock(const StackedBlock& rhs) = delete;
-	StackedBlock& operator=(const StackedBlock& rhs) = delete;
+	virtual void OnRender(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso) override;
 
-public:
-	virtual void OnRender(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso = nullptr, ID3D12PipelineState* _psoTess = nullptr) override;
+	static void BuildGeometry_S(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList);
+
+private:
+#pragma region _NotUsed_
+	virtual void BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList) override {};
+	virtual void BuildBorder(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList) override {};
+#pragma endregion This class use static Build method for optimization
+	static void BuildBorder_S(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList);
 
 public:
 	bool m_isActivate = false;
 
-	/*
-	 * ※ 주의점 ※
-	 * 300개의 객체가 동일한 Geometry Data를 사용하므로 최적화를 위해 
-	 * 해당 클래스는 GameObject의 멤버 변수/함수가 아닌 정적 멤버 변수/함수를 따로 정의해 사용한다.(동일한 네이밍)
-	 */
-public:
-	static void BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList);
-
 private:
-	static void BuildBorder(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList);
-
-private:
-	static std::unique_ptr<MeshGeometry> m_pGeometry;
-	static std::unique_ptr<MeshGeometry> m_pBorder;
+	static std::unique_ptr<MeshGeometry> m_pGeometry_S;
+	static std::unique_ptr<MeshGeometry> m_pBorder_S;
 };
 
 
 
-
-
-class Grid : public GameObject
-{
+class Grid final : public GameObject {
 public:
 	Grid(ID3D12Device* _device, ID3D12DescriptorHeap* _descHeap);
-	virtual ~Grid();
+	virtual ~Grid() = default;
 
-	Grid() = delete;
-	Grid(const Grid& rhs) = delete;
-	Grid& operator=(const Grid& rhs) = delete;
-
-public:
-	virtual void OnRender(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso = nullptr, ID3D12PipelineState* _psoTess = nullptr) override;
+	virtual void OnRender(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso) override;
 	virtual void BuildGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList) override;
 
-	// Clear한 층의 개수를 계산.
-	UINT CalcRemoveNum();
-	// 모든 Stack 정보를 초기화
+	UINT CalcRemovedNumOfLayer();
 	void ResetStackedBlocksData();
 
 private:
+#pragma region _NotUsed_
+	virtual void BuildBorder(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList) override {};
+#pragma endregion Grid does not need a border
 	void BuildStackedBlockPool(ID3D12Device* _device, ID3D12DescriptorHeap* _descHeap);
-	// Stack여부를 토대로 StackedBlock의 Rendering을 활성화.
 	void OnRender_StackedBlock(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap, ID3D12PipelineState* _pso = nullptr, ID3D12PipelineState* _psoTess = nullptr) const;
-	// Clear시 비활성화할 StackedBlock 결정.
 	void RemoveStackedBlocksOnLayer(UINT _layer);
-	// 층이 Clear될 수 있는지를 계산.
 	bool IsLayerFull(UINT _layer) const;
 
 public:

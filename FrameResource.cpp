@@ -4,8 +4,7 @@
 using namespace std;
 
 FrameResource::FrameResource(ID3D12Device* _device, ID3D12PipelineState* _pso, ID3D12DescriptorHeap* _descHeap, UINT _index)
-	:m_pipelineState(_pso)
-{
+	:m_pipelineState(_pso) {
 	for (UINT i = 0; i < 2; ++i) {
 		ThrowIfFailed(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_commandAllocators[i])));
 		ThrowIfFailed(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_commandAllocators[i].Get(), m_pipelineState.Get(), IID_PPV_ARGS(&m_commandLists[i])));
@@ -36,13 +35,7 @@ FrameResource::FrameResource(ID3D12Device* _device, ID3D12PipelineState* _pso, I
 	m_batchSubmits[batchSize - 1] = m_commandLists[1].Get();
 }
 
-FrameResource::~FrameResource()
-{
-	m_constantBuffer.reset();
-}
-
-void FrameResource::Initialize()
-{
+void FrameResource::Initialize() {
 	for (UINT i = 0; i < 2; ++i) {
 		ThrowIfFailed(m_commandAllocators[i]->Reset());
 		ThrowIfFailed(m_commandLists[i]->Reset(m_commandAllocators[i].Get(), m_pipelineState.Get()));
@@ -54,7 +47,6 @@ void FrameResource::Initialize()
 	}
 }
 
-void FrameResource::WriteConstantBuffer(SceneConstant _constant)
-{
+void FrameResource::WriteConstantBuffer(SceneConstant _constant) {
 	m_constantBuffer->CopyData(0, _constant);
 }

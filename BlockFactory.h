@@ -3,16 +3,10 @@
 
 class Block;
 
-// 각 Block별로 2개의 객체를 생성후 번갈아가면서 사용하는 방식으로 운용한다.
-class BlockFactory
-{
+class BlockFactory final {
 public:
-	static void BuildAllBlockTypeGeometry(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap);
-	static void DestoryBlockFactory();
+	static void BuildBlockFactory(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, ID3D12DescriptorHeap* _descHeap);
 	static std::shared_ptr<Block> SelectRandomBlock();
-
-private:
-	static void BuildAllBlockTypePool(ID3D12Device* _device, ID3D12DescriptorHeap* _descHeap);
 
 private:
 	static UINT m_blockTypeNym;
