@@ -1,4 +1,3 @@
 # 3DTetris
 Play Video : https://www.youtube.com/watch?v=kg-Au1cWQms  
-Tool : C++, DirectX 12  
-Optimization : Multi-Threading, Circulatory Framesorce
+Tool : C++, DirectX 12
