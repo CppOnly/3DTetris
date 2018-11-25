@@ -1,5 +1,5 @@
 # 3DTetris
-Play Video : https://www.youtube.com/watch?v=kg-Au1cWQms  
+Play Video : https://www.youtube.com/watch?v=iZaavdNJLnU  
 Tool : C++, DirectX 12
 
 <2018/11/23 변경사항>
